@@ -38,8 +38,7 @@ public partial class MainForm : Form
         {
             var parameters = new double[] { p1, p2 };
 
-            var th = new Thread(CalculatorThread);
-            th.Start(parameters);
+            ThreadPool.QueueUserWorkItem(CalculatorThread, parameters);
         }
         else
         {
