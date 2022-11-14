@@ -67,7 +67,7 @@ public partial class MainForm : Form
                 ShowResult(data, result);
             }
 
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
         }
     }
 }

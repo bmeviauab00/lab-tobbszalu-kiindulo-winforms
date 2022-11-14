@@ -7,33 +7,45 @@ public class DataFifo
 {
     private readonly List<double[]> _innerList = new List<double[]>();
     private object _syncRoot = new object();
+    private ManualResetEvent _hasData = new ManualResetEvent(false);
 
     public void Put(double[] data)
     {
         lock (_syncRoot)
         {
-            _innerList.Add(data); 
+            _innerList.Add(data);
+            _hasData.Set();
         }
     }
 
     public bool TryGet(out double[] data)
     {
-        lock (_syncRoot)
+        if (_hasData.WaitOne())
         {
-            if (_innerList.Count > 0)
+            lock (_syncRoot)
             {
-                // Some little artificial delay, which does not affect the FIFO functionality
-                Thread.Sleep(500);
+                if (_innerList.Count > 0)
+                {
+                    data = _innerList[0];
+                    _innerList.RemoveAt(0);
+                    if (_innerList.Count == 0)
+                    {
+                        _hasData.Reset();
+                    }
 
-                data = _innerList[0];
-                _innerList.RemoveAt(0);
-                return true;
+                    return true;  
+                }
+                else
+                {
+                    data = null;
+                    return false;
+                }
             }
-            else
-            {
-                data = null;
-                return false;
-            } 
         }
+        else
+        {
+            data = null;
+            return false;
+        } 
     }
 }
