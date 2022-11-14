@@ -30,7 +30,8 @@ public partial class MainForm : Form
         {
             var parameters = new double[] { p1, p2 };
 
-            // TODO Call Algorithms.dll
+            var result = Algorithms.SuperAlgorithm.Calculate(parameters);
+            ShowResult(parameters, result);
         }
         else
         {
