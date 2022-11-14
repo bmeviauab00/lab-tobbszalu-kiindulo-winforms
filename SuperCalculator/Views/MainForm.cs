@@ -16,6 +16,10 @@ public partial class MainForm : Form
 
         textBoxParam1.Text = 12.34.ToString();
         textBoxParam2.Text = 56.78.ToString();
+
+        new Thread(WorkerThread) { Name = "Szal1" }.Start();
+        new Thread(WorkerThread) { Name = "Szal2" }.Start();
+        new Thread(WorkerThread) { Name = "Szal3" }.Start();
     }
 
     private void ShowResult(double[] parameters, double result)
@@ -38,7 +42,7 @@ public partial class MainForm : Form
         {
             var parameters = new double[] { p1, p2 };
 
-            ThreadPool.QueueUserWorkItem(CalculatorThread, parameters);
+            _fifo.Put(parameters);
         }
         else
         {
@@ -51,5 +55,19 @@ public partial class MainForm : Form
         var parameters = (double[])arg;
         var result = Algorithms.SuperAlgorithm.Calculate(parameters);
         ShowResult(parameters, result);
+    }
+
+    private void WorkerThread()
+    {
+        while (true)
+        {
+            if (_fifo.TryGet(out var data))
+            {
+                double result = Algorithms.SuperAlgorithm.Calculate(data);
+                ShowResult(data, result);
+            }
+
+            Thread.Sleep(500);
+        }
     }
 }
