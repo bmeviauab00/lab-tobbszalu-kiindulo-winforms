@@ -59,7 +59,7 @@ public partial class MainForm : Form
 
     private void WorkerThread()
     {
-        while (true)
+        while (!IsDisposed)
         {
             if (_fifo.TryGet(out var data))
             {

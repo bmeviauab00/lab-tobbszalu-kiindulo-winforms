@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -8,6 +9,12 @@ public class DataFifo
     private readonly List<double[]> _innerList = new List<double[]>();
     private object _syncRoot = new object();
     private ManualResetEvent _hasData = new ManualResetEvent(false);
+    private ManualResetEvent _releaseTryGet = new ManualResetEvent(false);
+
+    public void Release()
+    {
+        _releaseTryGet.Set();
+    }
 
     public void Put(double[] data)
     {
@@ -20,7 +27,7 @@ public class DataFifo
 
     public bool TryGet(out double[] data)
     {
-        if (_hasData.WaitOne())
+        if (WaitHandle.WaitAny(new[] { _hasData, _releaseTryGet }) == 0)
         {
             lock (_syncRoot)
             {
