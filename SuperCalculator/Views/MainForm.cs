@@ -20,9 +20,16 @@ public partial class MainForm : Form
 
     private void ShowResult(double[] parameters, double result)
     {
-        var lvi = listViewResult.Items.Add($"{parameters[0]} #  {parameters[1]} = {result}");
-        listViewResult.EnsureVisible(lvi.Index);
-        listViewResult.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        if (InvokeRequired)
+        {
+            Invoke(ShowResult, new object[] { parameters, result });
+        }
+        else if (!IsDisposed)
+        {
+            var lvi = listViewResult.Items.Add($"{parameters[0]} #  {parameters[1]} = {result}");
+            listViewResult.EnsureVisible(lvi.Index);
+            listViewResult.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
     }
 
     private void buttonCalcResult_Click(object sender, EventArgs e)
