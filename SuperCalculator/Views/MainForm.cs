@@ -1,6 +1,7 @@
 ﻿using SuperCalculator.Data;
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SuperCalculator;
@@ -30,12 +31,19 @@ public partial class MainForm : Form
         {
             var parameters = new double[] { p1, p2 };
 
-            var result = Algorithms.SuperAlgorithm.Calculate(parameters);
-            ShowResult(parameters, result);
+            var th = new Thread(CalculatorThread);
+            th.Start(parameters);
         }
         else
         {
             MessageBox.Show(this, "Invalid parameter!", "Error");
         }
+    }
+
+    private void CalculatorThread(object arg)
+    {
+        var parameters = (double[])arg;
+        var result = Algorithms.SuperAlgorithm.Calculate(parameters);
+        ShowResult(parameters, result);
     }
 }
