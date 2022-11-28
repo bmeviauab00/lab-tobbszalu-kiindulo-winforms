@@ -9,6 +9,7 @@ namespace SuperCalculator;
 public partial class MainForm : Form
 {
     private readonly DataFifo _fifo = new DataFifo();
+    private bool _isClosed = false;
 
     public MainForm()
     {
@@ -24,6 +25,9 @@ public partial class MainForm : Form
 
     private void ShowResult(double[] parameters, double result)
     {
+        if (_isClosed)
+            return;
+
         if (InvokeRequired)
         {
             Invoke(ShowResult, new object[] { parameters, result });
@@ -59,7 +63,7 @@ public partial class MainForm : Form
 
     private void WorkerThread()
     {
-        while (!IsDisposed)
+        while (!_isClosed)
         {
             if (_fifo.TryGet(out var data))
             {
@@ -69,5 +73,12 @@ public partial class MainForm : Form
 
             //Thread.Sleep(500);
         }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        _isClosed= true;
+        _fifo.Release();
     }
 }

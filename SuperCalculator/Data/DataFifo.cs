@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -40,7 +39,7 @@ public class DataFifo
                         _hasData.Reset();
                     }
 
-                    return true;  
+                    return true;
                 }
             }
         }

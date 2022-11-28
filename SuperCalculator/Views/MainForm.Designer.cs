@@ -17,7 +17,6 @@
             {
                 components.Dispose();
             }
-            _fifo.Release();
             base.Dispose(disposing);
         }
 
