@@ -42,17 +42,10 @@ public class DataFifo
 
                     return true;  
                 }
-                else
-                {
-                    data = null;
-                    return false;
-                }
             }
         }
-        else
-        {
-            data = null;
-            return false;
-        } 
+
+        data = null;
+        return false;
     }
 }
