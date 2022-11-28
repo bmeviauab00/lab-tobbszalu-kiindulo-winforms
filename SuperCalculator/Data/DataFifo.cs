@@ -23,10 +23,8 @@ public class DataFifo
             _innerList.RemoveAt(0);
             return true;
         }
-        else
-        {
-            data = null;
-            return false;
-        }
+
+        data = null;
+        return false;
     }
 }
